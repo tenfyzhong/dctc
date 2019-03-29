@@ -135,7 +135,10 @@ func dctc(client *docker.Client, id string) error {
 	}
 	service.Volumes = make([]string, 0, len(container.Mounts))
 	for _, mount := range container.Mounts {
-		str := fmt.Sprintf("%s:%s:%s", mount.Source, mount.Destination, mount.Mode)
+		str := fmt.Sprintf("%s:%s", mount.Source, mount.Destination)
+		if mount.Mode != "" {
+			str += ":" + mount.Mode
+		}
 		service.Volumes = append(service.Volumes, str)
 	}
 
