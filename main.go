@@ -73,10 +73,15 @@ func main() {
 		if err != nil {
 			return err
 		}
-		err = dctc(client, c.Args().Get(0))
+
+		str, err := dctc(client, []string(c.Args()))
 		if err != nil {
+			fmt.Fprintln(os.Stderr, err)
 			return err
 		}
+
+		fmt.Println(str)
+
 		return nil
 	}
 
