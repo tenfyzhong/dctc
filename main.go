@@ -18,6 +18,7 @@ var (
 	tlskey    string
 	tlsverify bool
 	output    string
+	help      bool
 )
 
 func main() {
@@ -76,9 +77,18 @@ func main() {
 			Usage:       "Use TLS and verify the remote",
 			Destination: &tlsverify,
 		},
+		cli.BoolFlag{
+			Name:        "help, h",
+			Usage:       "Show help",
+			Destination: &help,
+		},
 	}
 
 	app.Action = func(c *cli.Context) error {
+		if help {
+			cli.ShowAppHelpAndExit(c, 0)
+		}
+
 		if c.NArg() == 0 {
 			fmt.Fprintf(os.Stderr, "need an argument\n\n")
 			cli.ShowAppHelpAndExit(c, -1)
