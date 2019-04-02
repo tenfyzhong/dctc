@@ -3,37 +3,42 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/urfave/cli"
 )
 
 var (
-	debug     bool
-	file      string
 	host      string
 	tls       bool
 	tlscacert string
 	tlscert   string
 	tlskey    string
 	tlsverify bool
-	version   string
 )
 
 func main() {
+	home, err := homedir.Dir()
+	capath := ""
+	certpath := ""
+	keypath := ""
+	if err == nil {
+		capath = filepath.Join(home, ".docker", "ca.pem")
+		certpath = filepath.Join(home, ".docker", "cert.pem")
+		keypath = filepath.Join(home, ".docker", "key.pem")
+	}
+
 	app := cli.NewApp()
+	app.HideHelp = true
 	app.Name = "dctc"
 	app.Usage = "generate a docker-compose.yml from a container"
 	app.Version = "0.1.0"
 	app.Flags = []cli.Flag{
-		cli.BoolFlag{
-			Name:        "debug",
-			Usage:       "Enable debug mode",
-			Destination: &debug,
-		},
 		cli.StringFlag{
 			Name:        "host, H",
 			Value:       "unix:///var/run/docker.sock",
-			Usage:       "Daemon socket to connect to",
+			Usage:       "Daemon `socket` to connect to",
 			Destination: &host,
 		},
 		cli.BoolFlag{
@@ -44,16 +49,19 @@ func main() {
 		cli.StringFlag{
 			Name:        "tlscacert",
 			Usage:       "Trust certs signed only by this CA",
+			Value:       capath,
 			Destination: &tlscacert,
 		},
 		cli.StringFlag{
 			Name:        "tlscert",
 			Usage:       "Path to TLS certificate file",
+			Value:       certpath,
 			Destination: &tlscert,
 		},
 		cli.StringFlag{
 			Name:        "tlskey",
 			Usage:       "Path to TLS key file",
+			Value:       keypath,
 			Destination: &tlskey,
 		},
 		cli.BoolFlag{
