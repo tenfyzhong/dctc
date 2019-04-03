@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"time"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/urfave/cli"
@@ -37,6 +38,12 @@ func main() {
 	app.Name = "dctc"
 	app.Usage = "generate a docker-compose.yml from a container"
 	app.Version = "0.1.0"
+	app.ArgsUsage = "NAME|ID [NAME|ID...]"
+	app.Copyright = "Copyright (c) 2019 tenfy"
+	app.Compiled = time.Now()
+	app.Authors = []cli.Author{
+		cli.Author{Name: "tenfy", Email: "tenfy@tenfy.cn"},
+	}
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:        "host, H",
@@ -90,7 +97,7 @@ func main() {
 		}
 
 		if c.NArg() == 0 {
-			fmt.Fprintf(os.Stderr, "need an argument\n\n")
+			fmt.Fprintf(os.Stderr, "dctc requires at least 1 argument(s)\n\n")
 			cli.ShowAppHelpAndExit(c, -1)
 		}
 
