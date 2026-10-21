@@ -1,0 +1,34 @@
+name: Go
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GOTOOLCHAIN: local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.26.10'
+      - name: Verify patched compiler
+        run: |
+          go version
+          test "$(go env GOVERSION)" = go1.26.10
+      - run: go mod download
+      - run: go test -mod=readonly ./...
+      - run: go vet -mod=readonly ./...
+      - name: Build and verify executable
+        run: |
+          go build -mod=readonly -o bin/dctc .
+          go version -m bin/dctc
+          go version -m bin/dctc | head -n 1 | grep -F 'go1.26.10'
+      - name: Smoke test CLI help
+        run: bin/dctc --help
