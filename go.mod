@@ -2,6 +2,8 @@ module github.com/tenfyzhong/dctc
 
 go 1.14
 
+toolchain go1.26.10
+
 require (
 	github.com/fsouza/go-dockerclient v1.7.2
 	github.com/mitchellh/go-homedir v1.1.0
